@@ -1,0 +1,201 @@
+Script started on Sun 10 Sep 2017 07:08:11 PM PDT
+]0;sierra@sierra-VirtualBox: ~/CS-776/HW0-0[01;32msierra@sierra-VirtualBox[00m:[01;34m~/CS-776/HW0-0[00m$ ./solverg++ main.cpp -o solver  --std=c++11
+]0;sierra@sierra-VirtualBox: ~/CS-776/HW0-0[01;32msierra@sierra-VirtualBox[00m:[01;34m~/CS-776/HW0-0[00m$ g++ main.cpp -o solver  --std=c++11./solver[K
+Cannibals on Right: 	0
+Cannibals on Left: 	3
+Missionaries on Right: 	0
+Missionaries on Left: 	3
+push into q
+push into q
+push into q
+push into q
+push into q
+Cannibals on Right: 	2
+Cannibals on Left: 	1
+Missionaries on Right: 	0
+Missionaries on Left: 	3
+push into q
+push into q
+push into q
+push into q
+push into q
+Cannibals on Right: 	1
+Cannibals on Left: 	2
+Missionaries on Right: 	1
+Missionaries on Left: 	2
+push into q
+push into q
+push into q
+push into q
+push into q
+Cannibals on Right: 	0
+Cannibals on Left: 	3
+Missionaries on Right: 	2
+Missionaries on Left: 	1
+Cannibals on Right: 	1
+Cannibals on Left: 	2
+Missionaries on Right: 	0
+Missionaries on Left: 	3
+push into q
+push into q
+push into q
+push into q
+push into q
+Cannibals on Right: 	0
+Cannibals on Left: 	3
+Missionaries on Right: 	1
+Missionaries on Left: 	2
+Cannibals on Right: 	2
+Cannibals on Left: 	1
+Missionaries on Right: 	0
+Missionaries on Left: 	3
+push into q
+push into q
+push into q
+push into q
+push into q
+Cannibals on Right: 	3
+Cannibals on Left: 	0
+Missionaries on Right: 	1
+Missionaries on Left: 	2
+Cannibals on Right: 	2
+Cannibals on Left: 	1
+Missionaries on Right: 	2
+Missionaries on Left: 	1
+push into q
+push into q
+push into q
+push into q
+push into q
+Cannibals on Right: 	3
+Cannibals on Left: 	0
+Missionaries on Right: 	0
+Missionaries on Left: 	3
+push into q
+push into q
+push into q
+push into q
+push into q
+Cannibals on Right: 	2
+Cannibals on Left: 	1
+Missionaries on Right: 	1
+Missionaries on Left: 	2
+Cannibals on Right: 	3
+Cannibals on Left: 	0
+Missionaries on Right: 	1
+Missionaries on Left: 	2
+Cannibals on Right: 	2
+Cannibals on Left: 	1
+Missionaries on Right: 	2
+Missionaries on Left: 	1
+push into q
+push into q
+push into q
+push into q
+push into q
+Cannibals on Right: 	1
+Cannibals on Left: 	2
+Missionaries on Right: 	3
+Missionaries on Left: 	0
+push into q
+push into q
+Cannibals on Right: 	2
+Cannibals on Left: 	1
+Missionaries on Right: 	1
+Missionaries on Left: 	2
+Cannibals on Right: 	1
+Cannibals on Left: 	2
+Missionaries on Right: 	2
+Missionaries on Left: 	1
+Cannibals on Right: 	3
+Cannibals on Left: 	0
+Missionaries on Right: 	0
+Missionaries on Left: 	3
+push into q
+push into q
+push into q
+push into q
+push into q
+Cannibals on Right: 	2
+Cannibals on Left: 	1
+Missionaries on Right: 	1
+Missionaries on Left: 	2
+Cannibals on Right: 	1
+Cannibals on Left: 	2
+Missionaries on Right: 	2
+Missionaries on Left: 	1
+Cannibals on Right: 	2
+Cannibals on Left: 	1
+Missionaries on Right: 	0
+Missionaries on Left: 	3
+push into q
+push into q
+push into q
+push into q
+push into q
+Cannibals on Right: 	1
+Cannibals on Left: 	2
+Missionaries on Right: 	1
+Missionaries on Left: 	2
+push into q
+push into q
+push into q
+push into q
+push into q
+Cannibals on Right: 	2
+Cannibals on Left: 	1
+Missionaries on Right: 	0
+Missionaries on Left: 	3
+push into q
+push into q
+push into q
+push into q
+push into q
+Cannibals on Right: 	3
+Cannibals on Left: 	0
+Missionaries on Right: 	1
+Missionaries on Left: 	2
+Cannibals on Right: 	2
+Cannibals on Left: 	1
+Missionaries on Right: 	2
+Missionaries on Left: 	1
+push into q
+push into q
+push into q
+push into q
+push into q
+Cannibals on Right: 	3
+Cannibals on Left: 	0
+Missionaries on Right: 	0
+Missionaries on Left: 	3
+push into q
+push into q
+push into q
+push into q
+push into q
+Cannibals on Right: 	2
+Cannibals on Left: 	1
+Missionaries on Right: 	1
+Missionaries on Left: 	2
+Cannibals on Right: 	2
+Cannibals on Left: 	1
+Missionaries on Right: 	2
+Missionaries on Left: 	1
+push into q
+push into q
+push into q
+push into q
+push into q
+Cannibals on Right: 	3
+Cannibals on Left: 	0
+Missionaries on Right: 	3
+Missionaries on Left: 	0
+Solution Found!
+Cannibals on Right: 	3
+Cannibals on Left: 	0
+Missionaries on Right: 	3
+Missionaries on Left: 	0
+]0;sierra@sierra-VirtualBox: ~/CS-776/HW0-0[01;32msierra@sierra-VirtualBox[00m:[01;34m~/CS-776/HW0-0[00m$ exit
+exit
+
+Script done on Sun 10 Sep 2017 07:08:26 PM PDT
