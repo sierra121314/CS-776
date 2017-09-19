@@ -45,9 +45,10 @@ int main() {
 
 		if (fitness > best_fitness){ 
 			best_fitness = fitness;
+			
 		}
 
-		newout << fitness << "\t";
+		newout << best_fitness << "\t";
 		
 		// CLIMB. THAT. HILL.
 		
@@ -60,10 +61,10 @@ int main() {
 			else {
 				vec[j] = 0; //change it back
 			}
-			newout << fitness << "\t";
+			newout << best_fitness << "\t";
 		}
 		
-		for (int j=0; j<100000; j++) {
+		for (int j=0; j<1000; j++) {
 			int r;
 			int s;
 			for (int x = 0; x < rand()%1000; x++) {
@@ -90,7 +91,7 @@ int main() {
 
 			//evaluate fitness
 			fitness = eval(vec);
-			newout <<  fitness << "\t";
+			
 			// if fitness is > OR equal to the last fitness, keep changes
 			if (fitness >= best_fitness){ 
 				best_fitness = fitness; 
@@ -109,7 +110,7 @@ int main() {
 					vec[s] = 0;
 				}
 			}	
-			newout <<  fitness << "\t";
+			newout <<  best_fitness << "\t";
 		}
 		newout << endl;
 		newout << endl;
