@@ -1,18 +1,18 @@
-Script started on Tue 19 Sep 2017 09:23:15 AM PDT
+Script started on Tue 19 Sep 2017 02:45:11 PM PDT
 ]0;sierra@sierra-VirtualBox: ~/CS-776/HW2[01;32msierra@sierra-VirtualBox[00m:[01;34m~/CS-776/HW2[00m$ exit./solverg++ -o solver main.cpp evalCPP.o -std=c++111
 ]0;sierra@sierra-VirtualBox: ~/CS-776/HW2[01;32msierra@sierra-VirtualBox[00m:[01;34m~/CS-776/HW2[00m$ g++ -o solver main.cpp evalCPP.o -std=c++111[A]0;sierra@sierra-VirtualBox: ~/CS-776/HW2[01;32msierra@sierra-VirtualBox[00m:[01;34m~/CS-776/HW2[00m$ exit[K
 [K[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C./solver
-best_fitness = 40
-best_fitness = 48
 best_fitness = 44
-best_fitness = 48
-best_fitness = 52
+best_fitness = 44
 best_fitness = 64
 best_fitness = 48
+best_fitness = 46
 best_fitness = 48
-best_fitness = 44
 best_fitness = 48
+best_fitness = 48
+best_fitness = 42
+best_fitness = 40
 ]0;sierra@sierra-VirtualBox: ~/CS-776/HW2[01;32msierra@sierra-VirtualBox[00m:[01;34m~/CS-776/HW2[00m$ exit
 exit
 
-Script done on Tue 19 Sep 2017 09:26:09 AM PDT
+Script done on Tue 19 Sep 2017 02:48:01 PM PDT
