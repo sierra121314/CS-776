@@ -18,3 +18,4 @@ To run the program:
 ./solver
 ```
 
+#### To Graph Use Matlab with the HW2_data.m File
