@@ -9,7 +9,7 @@
 #include <iostream>
 #include <stdio.h>
 #include <math.h>
-#include "DeJong_funct_1.h"
+#include "GA.h"
 
 using namespace std;
 
@@ -22,49 +22,65 @@ int sim_size = 1;
 
 class bits {
 public:
-    int bits;
+    double range;
+    double num_x;
+    double x;
+    double b_size;
+    double string_size;
+    double lower_bound;
+    double funct;
     void bit_size();
     void problem_setup();
     
 };
 
 void bits::bit_size(){
-    int bit_size = log2(bits) + 1;
+    b_size = log2(range) + 1;
     //cout << "bitsize: " << bit_size << endl;
+    string_size = b_size*num_x;
+    cout << string_size << endl;
 }
+
 
 void bits::problem_setup() {
     if (DeJong_1 == true) {
-        bits = 512;
+        range = 512;
+        num_x = 3;
         bit_size(); //times num_x
-        //call DeJong function?
+        lower_bound = -5.12;
     }
     
     if (DeJong_2 == true) {
-        bits = 2048;
+        range = 2048;
+        num_x = 2;
         bit_size(); //times num_x
-        
+        lower_bound = -2.048;
+        funct = 0; //redo
     }
     
     if (DeJong_3 == true) {
-        bits = 512;
+        range = 512;
+        num_x = 5;
         bit_size(); //times num_x
-        
+        lower_bound = -5.12;
+        funct = round(x);
     }
     
     if (DeJong_4 == true) {
-        bits = 128;
+        range = 128;
+        num_x = 30;
         bit_size(); //times num_x
-        
+        lower_bound = -1.28;
+        funct = 0; //redo
     }
 }
 
 int main() {
-    
+    GA G;
     for (int s = 0; s < sim_size; s++){
         bits B;
         B.problem_setup();
-        //call GA
+        G.run(B.string_size, B.b_size, B.num_x, B.lower_bound, B.x, B.funct, DeJong_1, DeJong_2, DeJong_3, DeJong_4);
     }
     
     
