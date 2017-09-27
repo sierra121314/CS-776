@@ -47,22 +47,22 @@ void bits::problem_setup() {
     if (DeJong_1 == true) {
         range = 512;
         num_x = 3;
-        bit_size(); //times num_x
+        bit_size();
         lower_bound = -5.12;
     }
     
     if (DeJong_2 == true) {
         range = 2048;
         num_x = 2;
-        bit_size(); //times num_x
+        bit_size();
         lower_bound = -2.048;
-        funct = 0; //redo
+        
     }
     
     if (DeJong_3 == true) {
         range = 512;
         num_x = 5;
-        bit_size(); //times num_x
+        bit_size();
         lower_bound = -5.12;
         funct = round(x);
     }
@@ -70,17 +70,17 @@ void bits::problem_setup() {
     if (DeJong_4 == true) {
         range = 128;
         num_x = 30;
-        bit_size(); //times num_x
+        bit_size();
         lower_bound = -1.28;
         funct = 0; //redo
     }
 }
 
 int main() {
-    DeJong_1 = true;
+    DeJong_1 = false;
     DeJong_2 = false;
     DeJong_3 = false;
-    DeJong_4 = false;
+    DeJong_4 = true;
     
     GA G;
     srand(time (NULL));

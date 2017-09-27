@@ -80,13 +80,14 @@ void GA::generate(double string_size){
 }
 
 double GA::generateGaussianNoise() {
+    //https://en.wikipedia.org/wiki/Box–Muller_transform
     const double epsilon = numeric_limits<double>::min();
     const double two_pi = 2.0*3.14159265358979323846;
-    double mu = .5;
+    double mu = 0;
     //double mu = (((double)rand() / RAND_MAX) - 0.5) * 2;
-    double sigma = 0.5;
+    double sigma = 1;
     //double sigma = (((double)rand() / RAND_MAX) - 0.5) * 2;
-    int n = 0;
+    double n = 0;
     double z0, z1;
     double u1=0, u2=0;
     
@@ -100,7 +101,7 @@ double GA::generateGaussianNoise() {
     z1 = sqrt(-2.0 * log(u1)) * sin(two_pi * u2);
     //cout << z0 << endl;
     n = z0 * sigma + mu;
-    while (n>1 || n<0){
+    while (n>1 || n<-1){
         //cout << "new error loop" << endl;
         double z0, z1;
         double u1=0, u2=0;
@@ -129,25 +130,39 @@ double GA::evaluate(double b_size, double num_x, double lower_bound, double x, d
             
         }
         //cout << "num" << p << "\t" << num << endl;
-        x = lower_bound + num*(b_size/(pow(2,b_size))-1);
+        
         //cout << "x\t" << x << endl;
-        int n = generateGaussianNoise();
+        double n = generateGaussianNoise();
         if (DeJong_1 == true){
             x = lower_bound + num*(b_size/(pow(2,b_size))-1);
             funct = pow(x,2);
             //cout << "funct\t" << funct << endl;
         }
         else if (DeJong_2 ==true){
-            funct = 0; //REALLY DO THIS
+            int x1 = lower_bound + num*(b_size/(pow(2,b_size))-1);
+            
+            double num1=0;
+            for (int i = 0; i < b_size; i++){
+                num1 += vec.at(i + (p+1)*b_size)*pow(2,i); // decode
+                
+            }
+            int x2 = lower_bound + num1*(b_size/(pow(2,b_size))-1);
+            //cout << "x1\t" << x1 << "\t" << "x2\t" << x2 << endl;
+            funct = 100*pow(pow(x1,2)-x2,2)+pow(1-x1,2);
+            fitness = funct;
+            break;
         }
         else if (DeJong_3 == true){
             x = lower_bound + num*(b_size/(pow(2,b_size))-1);
             funct = round(x);
         }
         else if (DeJong_4 == true){
-            x = lower_bound + num*(b_size/(pow(2,b_size))-1); 
-            funct = p*pow(x,4) + n;
+            x = lower_bound + num*(b_size/(pow(2,b_size))-1);
+            //cout << "x\t" << x << endl;
+            funct = abs(p*pow(x,4)) + n;
+            //cout << "funct\t" << funct << endl;
         }
+        
         fitness += funct; //use function to evaluate fitness
         //cout << p << "\tfitness\t" << fitness << endl;
     }
@@ -162,11 +177,13 @@ double GA::evaluate(double b_size, double num_x, double lower_bound, double x, d
 void GA::selection(){
     //sum of fitness of the entire population
     
-    int sum=0;
+    double sum=0;
     prob_vector.clear();
     prob_range.clear();
     for(int f=0; f<pop_size; f++){
         sum += fit_vector.at(f);
+        assert(fit_vector.at(f)>=0);
+        assert(sum>=0);
         //cout << "sum\t" << sum << endl;
     }
     
@@ -195,8 +212,9 @@ void GA::selection(){
     //SELECT PARENTS
     // PARENT 1 //
     double r1 = (double)rand()/RAND_MAX;
-    //cout << "r1\t" << r1 << endl;
+    cout << "r1\t" << r1 << endl;
     for (int p=0; p<pop_size; p++){
+        //cout << "prob_range@p" << prob_range.at(p) << endl;
         if(p == 0){
             if( 0 <= r1 && r1 < prob_range.at(p)) {
                 parent_1 = p;
@@ -236,7 +254,7 @@ void GA::selection(){
             }
         }
     }
-    cout << "P2\t";
+    //cout << "P2\t";
     for ( int q=0; q<vec.size();q++){
         
         cout << pop.at(parent_2).at(q);
@@ -321,7 +339,6 @@ void GA::crossover_mutate(double b_size, double num_x){
             
         }
         if(r > prob_crossover){
-            //cout << "bah" << endl;
             //cout << "new_pop\t" << &new_pop.at(2*cx) << endl;
             new_pop.at(2*cx) = pop.at(parent_1); //child_1
             new_pop.at(2*cx+1) = pop.at(parent_2); //child_1
@@ -363,6 +380,7 @@ void GA::run(double string_size, double b_size, double num_x, double lower_bound
         for (int p = 0; p < pop_size; p++){
             
             evaluate(b_size, num_x, lower_bound, x, funct, DeJong_1, DeJong_2, DeJong_3, DeJong_4);
+            assert(fitness>=0);
             fit_vector.at(p) = fitness;
             //cout << "fit_vector\t" << fit_vector.at(p) << endl;
         }
