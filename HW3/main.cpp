@@ -10,13 +10,14 @@
 #include <stdio.h>
 #include <math.h>
 #include "GA.h"
+#include <cstdlib>
 
 using namespace std;
 
-bool DeJong_1 = true;
-bool DeJong_2 = false;
-bool DeJong_3 = false;
-bool DeJong_4 = false;
+bool DeJong_1;
+bool DeJong_2;
+bool DeJong_3;
+bool DeJong_4;
 
 int sim_size = 1;
 
@@ -76,7 +77,13 @@ void bits::problem_setup() {
 }
 
 int main() {
+    DeJong_1 = true;
+    DeJong_2 = false;
+    DeJong_3 = false;
+    DeJong_4 = false;
+    
     GA G;
+    srand(time (NULL));
     for (int s = 0; s < sim_size; s++){
         bits B;
         B.problem_setup();
