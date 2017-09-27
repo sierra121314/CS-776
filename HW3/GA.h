@@ -15,14 +15,15 @@
 #include <assert.h>
 #include <algorithm>
 #include <stdlib.h>
+#include <fstream>
 
 using namespace std;
 
 
 class GA {
 public:
-    int pop_size = 10;
-    int max_gen = 100;
+    int pop_size = 60;
+    int max_gen = 80;
     double fitness;
     double parent_1;
     double parent_2;
@@ -30,21 +31,20 @@ public:
     double child_2;
     double prob_crossover =0;
     double prob_mutation =0;
+    double sum;
     void generate(double string_size);
     void init_fit_vec();
     double generateGaussianNoise();
-    double evaluate(double b_size, double num_x, double lower_bound, double x, double funct, bool DeJong_1, bool DeJong_2, bool DeJong_3, bool DeJong_4);
+    double evaluate(int p, double b_size, double num_x, double lower_bound, double funct, bool DeJong_1, bool DeJong_2, bool DeJong_3, bool DeJong_4);
     void selection();
-    void crossover_mutate(double bit_size, double num_x);
-    void run(double string_size, double b_size, double num_x, double lower_bound, double x, double funct, bool DeJong_1, bool DeJong_2, bool DeJong_3, bool DeJong_4);
+    void crossover_mutate(double bit_size, double num_x, bool low, bool nom, bool high);
+    void run(double string_size, double b_size, double num_x, double lower_bound, double funct, bool DeJong_1, bool DeJong_2, bool DeJong_3, bool DeJong_4, bool low, bool nom, bool high);
     
     vector<double> fit_vector;
     vector<double> prob_vector;
     vector<double> prob_range;
     
-    bool low;
-    bool nom;
-    bool high;
+    
     
     vector<int> vec;
     vector< vector<int> > pop, new_pop; //parent
@@ -55,7 +55,7 @@ void GA::init_fit_vec(){
         fit_vector.push_back(0);
         
     }
-    cout << "size" << fit_vector.size() << endl;
+    //cout << "size" << fit_vector.size() << endl;
 }
 
 
@@ -75,7 +75,7 @@ void GA::generate(double string_size){
         pop.push_back(vec); //a population has a set of arrays of 0s and 1s
     }
     new_pop=pop;
-    cout << new_pop.at(0).at(0) << endl;
+    //cout << "new_pop.at(0).at(0)\t" << new_pop.at(0).at(0) << endl;
 
 }
 
@@ -120,13 +120,14 @@ double GA::generateGaussianNoise() {
     return n;
 }
 
-double GA::evaluate(double b_size, double num_x, double lower_bound, double x, double funct, bool DeJong_1, bool DeJong_2, bool DeJong_3, bool DeJong_4){
+double GA::evaluate(int p, double b_size, double num_x, double lower_bound, double funct, bool DeJong_1, bool DeJong_2, bool DeJong_3, bool DeJong_4){
     //take decoded individual
     fitness = 0;
-    for (int p = 0; p < num_x; p++){ //P comes from main.cpp
-        int num = 0;
+    double x;
+    for (int t = 0; t < num_x; t++){ //P comes from main.cpp
+        double num = 0;
         for (int i = 0; i < b_size; i++){
-            num += vec.at(i + p*b_size)*pow(2,i); // decode
+            num += pop.at(p).at(i + t*b_size)*pow(2,i); // decode
             
         }
         //cout << "num" << p << "\t" << num << endl;
@@ -134,16 +135,19 @@ double GA::evaluate(double b_size, double num_x, double lower_bound, double x, d
         //cout << "x\t" << x << endl;
         double n = generateGaussianNoise();
         if (DeJong_1 == true){
-            x = lower_bound + num*(b_size/(pow(2,b_size))-1);
+            //cout << "lower\t" << lower_bound << endl;
+            //cout << "bsize\t" << b_size << endl;
+            x = lower_bound + num*(b_size/(pow(2,b_size)-1));
+            //cout << "x\t" << x << endl;
             funct = pow(x,2);
             //cout << "funct\t" << funct << endl;
         }
         else if (DeJong_2 ==true){
-            int x1 = lower_bound + num*(b_size/(pow(2,b_size))-1);
+            double x1 = lower_bound + num*(b_size/(pow(2,b_size)-1));
             
             double num1=0;
             for (int i = 0; i < b_size; i++){
-                num1 += vec.at(i + (p+1)*b_size)*pow(2,i); // decode
+                num1 += vec.at(i + (t+1)*b_size)*pow(2,i); // decode
                 
             }
             int x2 = lower_bound + num1*(b_size/(pow(2,b_size))-1);
@@ -177,12 +181,12 @@ double GA::evaluate(double b_size, double num_x, double lower_bound, double x, d
 void GA::selection(){
     //sum of fitness of the entire population
     
-    double sum=0;
+    sum=0;
     prob_vector.clear();
     prob_range.clear();
     for(int f=0; f<pop_size; f++){
         sum += fit_vector.at(f);
-        assert(fit_vector.at(f)>=0);
+        //assert(fit_vector.at(f)>=0);
         assert(sum>=0);
         //cout << "sum\t" << sum << endl;
     }
@@ -212,7 +216,7 @@ void GA::selection(){
     //SELECT PARENTS
     // PARENT 1 //
     double r1 = (double)rand()/RAND_MAX;
-    cout << "r1\t" << r1 << endl;
+    //cout << "r1\t" << r1 << endl;
     for (int p=0; p<pop_size; p++){
         //cout << "prob_range@p" << prob_range.at(p) << endl;
         if(p == 0){
@@ -230,12 +234,12 @@ void GA::selection(){
             }
         }
     }
-    cout << "P1\t";
+    //cout << "P1\t";
     for ( int q=0; q<vec.size();q++){
         
-        cout << pop.at(parent_1).at(q);
+        //cout << pop.at(parent_1).at(q);
     }
-    cout << endl;
+    //cout << endl;
     // PARENT 2 //
     double r2 = (double) rand()/RAND_MAX;
     for (int p=0; p<pop_size; p++){
@@ -257,12 +261,12 @@ void GA::selection(){
     //cout << "P2\t";
     for ( int q=0; q<vec.size();q++){
         
-        cout << pop.at(parent_2).at(q);
+        //cout << pop.at(parent_2).at(q);
     }
-    cout << endl;
+    //cout << endl;
 }
 
-void GA::crossover_mutate(double b_size, double num_x){
+void GA::crossover_mutate(double b_size, double num_x, bool low, bool nom, bool high){
     if (low == true) {
         prob_crossover = 0.2;
         prob_mutation = 0.0001;
@@ -280,10 +284,10 @@ void GA::crossover_mutate(double b_size, double num_x){
     
     
     for (int cx=0; cx < pop_size/2; cx++) {
-        cout << "made it to cross over funct i.e. selection" <<endl;
+        //cout << "made it to cross over funct i.e. selection" <<endl;
         //cout << prob_crossover << "\t" << prob_mutation << endl;
         selection();
-        cout << "parent_1\t" << parent_1 << "\t" << "parent_2\t" << parent_2 << endl << endl;
+        //cout << "parent_1\t" << parent_1 << "\t" << "parent_2\t" << parent_2 << endl << endl;
         double r = (double)rand()/RAND_MAX;
         //cout << "r\t" << r << endl;
         
@@ -292,10 +296,10 @@ void GA::crossover_mutate(double b_size, double num_x){
             //do cross over
             //choose cx pt
             int cross_spot = 1+ rand() % vec.size()-1; //CORRECT?
-            cout << "cross spot\t" << cross_spot << endl;
+            //cout << "cross spot\t" << cross_spot << endl;
             assert(cross_spot<b_size*num_x);
             //cout << "win" << endl;
-            ///*
+            /*
             cout << "before" <<endl;
             cout << "P1\t";
             for ( int q=0; q<vec.size();q++){
@@ -309,7 +313,7 @@ void GA::crossover_mutate(double b_size, double num_x){
                 cout << pop.at(parent_2).at(q);
             }
             cout << endl;
-            //*/
+            */
             for (int p = 0;  p<cross_spot; p++){
                 //first half swap
                 new_pop.at(2*cx).at(p) = pop.at(parent_1).at(p);
@@ -322,7 +326,7 @@ void GA::crossover_mutate(double b_size, double num_x){
                 new_pop.at(2*cx+1).at(v) = pop.at(parent_1).at(v);
             }
             
-            ///*
+            /*
             cout << "after swap" <<endl;
             cout << "P1\t";
             for ( int q=0; q<vec.size();q++){
@@ -335,7 +339,7 @@ void GA::crossover_mutate(double b_size, double num_x){
                 cout << new_pop.at(2*cx+1).at(q);
             }
             cout << endl << endl;
-            //*/
+            */
             
         }
         if(r > prob_crossover){
@@ -367,28 +371,270 @@ void GA::crossover_mutate(double b_size, double num_x){
 
 
 
-void GA::run(double string_size, double b_size, double num_x, double lower_bound, double x, double funct, bool DeJong_1, bool DeJong_2, bool DeJong_3, bool DeJong_4){
+void GA::run(double string_size, double b_size, double num_x, double lower_bound, double funct, bool DeJong_1, bool DeJong_2, bool DeJong_3, bool DeJong_4, bool low, bool nom, bool high){
     
-    low = true;
-    nom = false;
-    high = false;
+    ofstream f1out_low_min;
+    ofstream f1out_low_max;
+    ofstream f1out_low_ave;
+    ofstream f1out_high_min;
+    ofstream f1out_high_max;
+    ofstream f1out_high_ave;
+    ofstream f1out_nom_min;
+    ofstream f1out_nom_max;
+    ofstream f1out_nom_ave;
+    // DEJONG 2 //
+    ofstream f2out_low_min;
+    ofstream f2out_low_max;
+    ofstream f2out_low_ave;
+    ofstream f2out_high_min;
+    ofstream f2out_high_max;
+    ofstream f2out_high_ave;
+    ofstream f2out_nom_min;
+    ofstream f2out_nom_max;
+    ofstream f2out_nom_ave;
+    //DEJONG 3//
+    ofstream f3out_low_min;
+    ofstream f3out_low_max;
+    ofstream f3out_low_ave;
+    ofstream f3out_high_min;
+    ofstream f3out_high_max;
+    ofstream f3out_high_ave;
+    ofstream f3out_nom_min;
+    ofstream f3out_nom_max;
+    ofstream f3out_nom_ave;
+    //DEJONG 4//
+    ofstream f4out_low_min;
+    ofstream f4out_low_max;
+    ofstream f4out_low_ave;
+    ofstream f4out_high_min;
+    ofstream f4out_high_max;
+    ofstream f4out_high_ave;
+    ofstream f4out_nom_min;
+    ofstream f4out_nom_max;
+    ofstream f4out_nom_ave;
+    
+    if (DeJong_1 ==true && low ==true){
+        f1out_low_min.open("F1-low-min.txt", fstream::app);
+        f1out_low_max.open("F1-low-max.txt", fstream::app);
+        f1out_low_ave.open("F1-low-ave.txt", fstream::app);
+    }
+    if (DeJong_1 ==true && high==true){
+        f1out_high_min.open("F1-high-min.txt", fstream::app);
+        f1out_high_max.open("F1-high-max.txt", fstream::app);
+        f1out_high_ave.open("F1-high-ave.txt", fstream::app);
+    }
+    if (DeJong_1 ==true && nom==true){
+        f1out_nom_min.open("F1-nom-min.txt", fstream::app);
+        f1out_nom_max.open("F1-nom-max.txt", fstream::app);
+        f1out_nom_ave.open("F1-nom-ave.txt", fstream::app);
+    }
+    //DEJONG 2//
+    if (DeJong_2 ==true && low ==true){
+        f2out_low_min.open("F2-low-min.txt", fstream::app);
+        f2out_low_max.open("F2-low-max.txt", fstream::app);
+        f2out_low_ave.open("F2-low-ave.txt", fstream::app);
+    }
+    if (DeJong_2 ==true && high==true){
+        f2out_high_min.open("F2-high-min.txt", fstream::app);
+        f2out_high_max.open("F2-high-max.txt", fstream::app);
+        f2out_high_ave.open("F2-high-ave.txt", fstream::app);
+    }
+    if (DeJong_2 ==true && nom==true){
+        f2out_nom_min.open("F2-nom-min.txt", fstream::app);
+        f2out_nom_max.open("F2-nom-max.txt", fstream::app);
+        f2out_nom_ave.open("F2-nom-ave.txt", fstream::app);
+    }
+    //DEJONG 3//
+    if (DeJong_3 ==true && low ==true){
+        f3out_low_min.open("F3-low-min.txt", fstream::app);
+        f3out_low_max.open("F3-low-max.txt", fstream::app);
+        f3out_low_ave.open("F3-low-ave.txt", fstream::app);
+    }
+    if (DeJong_3 ==true && high==true){
+        f3out_high_min.open("F3-high-min.txt", fstream::app);
+        f3out_high_max.open("F3-high-max.txt", fstream::app);
+        f3out_high_ave.open("F3-high-ave.txt", fstream::app);
+    }
+    if (DeJong_3 ==true && nom==true){
+        f3out_nom_min.open("F3-nom-min.txt", fstream::app);
+        f3out_nom_max.open("F3-nom-max.txt", fstream::app);
+        f3out_nom_ave.open("F3-nom-ave.txt", fstream::app);
+    }
+    //DEJONG 4//
+    if (DeJong_4 ==true && low ==true){
+        f4out_low_min.open("F4-low-min.txt", fstream::app);
+        f4out_low_max.open("F4-low-max.txt", fstream::app);
+        f4out_low_ave.open("F4-low-ave.txt", fstream::app);
+    }
+    if (DeJong_4 ==true && high==true){
+        f4out_high_min.open("F4-high-min.txt", fstream::app);
+        f4out_high_max.open("F4-high-max.txt", fstream::app);
+        f4out_high_ave.open("F4-high-ave.txt", fstream::app);
+    }
+    if (DeJong_4 ==true && nom==true){
+        f4out_nom_min.open("F4-nom-min.txt", fstream::app);
+        f4out_nom_max.open("F4-nom-max.txt", fstream::app);
+        f4out_nom_ave.open("F4-nom-ave.txt", fstream::app);
+    }
     
     generate(string_size);
     init_fit_vec();
     for (int g = 0; g < max_gen; g++) {
         
+        //cout << "generation\t" << g << endl;
         for (int p = 0; p < pop_size; p++){
             
-            evaluate(b_size, num_x, lower_bound, x, funct, DeJong_1, DeJong_2, DeJong_3, DeJong_4);
-            assert(fitness>=0);
-            fit_vector.at(p) = fitness;
+            evaluate(p, b_size, num_x, lower_bound,  funct, DeJong_1, DeJong_2, DeJong_3, DeJong_4);
+            //assert(fitness>=0);
+            //cout << "fit before\t" << fitness << endl;
+            fit_vector.at(p) = abs(fitness);
             //cout << "fit_vector\t" << fit_vector.at(p) << endl;
         }
-        cout << "size after evaluating all policies\t" << fit_vector.size() << endl;
+        double min = *min_element(fit_vector.begin(), fit_vector.end());
+        double max = *max_element(fit_vector.begin(), fit_vector.end());
+        double ave = sum/pop_size;
+        
+        // DEJONG 1 //
+        if (DeJong_1 ==true && low ==true){
+            f1out_low_min << min << "\t";
+            f1out_low_max << max << "\t";
+            f1out_low_ave << ave << "\t";
+        }
+        if (DeJong_1 ==true && high ==true){
+            f1out_high_min << min << "\t";
+            f1out_high_max << max << "\t";
+            f1out_high_ave << ave << "\t";
+        }
+        if (DeJong_1 ==true && nom ==true){
+            f1out_nom_min << min << "\t";
+            f1out_nom_max << max << "\t";
+            f1out_nom_ave << ave << "\t";
+        }
+        //DEJONG 2//
+        if (DeJong_2 ==true && low ==true){
+            f2out_low_min << min << "\t";
+            f2out_low_max << max << "\t";
+            f2out_low_ave << ave << "\t";
+        }
+        if (DeJong_2 ==true && high ==true){
+            f2out_high_min << min << "\t";
+            f2out_high_max << max << "\t";
+            f2out_high_ave << ave << "\t";
+        }
+        if (DeJong_2 ==true && nom ==true){
+            f2out_nom_min << min << "\t";
+            f2out_nom_max << max << "\t";
+            f2out_nom_ave << ave << "\t";
+        }
+        //DEJONG 3//
+        if (DeJong_3 ==true && low ==true){
+            f3out_low_min << min << "\t";
+            f3out_low_max << max << "\t";
+            f3out_low_ave << ave << "\t";
+        }
+        if (DeJong_3 ==true && high ==true){
+            f3out_high_min << min << "\t";
+            f3out_high_max << max << "\t";
+            f3out_high_ave << ave << "\t";
+        }
+        if (DeJong_3 ==true && nom ==true){
+            f3out_nom_min << min << "\t";
+            f3out_nom_max << max << "\t";
+            f3out_nom_ave << ave << "\t";
+        }
+        //DEJONG 4//
+        if (DeJong_4 ==true && low ==true){
+            f4out_low_min << min << "\t";
+            f4out_low_max << max << "\t";
+            f4out_low_ave << ave << "\t";
+        }
+        if (DeJong_4 ==true && high ==true){
+            f4out_high_min << min << "\t";
+            f4out_high_max << max << "\t";
+            f4out_high_ave << ave << "\t";
+        }
+        if (DeJong_4 ==true && nom ==true){
+            f4out_nom_min << min << "\t";
+            f4out_nom_max << max << "\t";
+            f4out_nom_ave << ave << "\t";
+        }
+    
+        //cout << "size after evaluating all policies\t" << fit_vector.size() << endl;
         assert(fit_vector.size() == pop_size);
-        crossover_mutate(b_size, num_x); //selection happens in here too
-
+        crossover_mutate(b_size, num_x, low, nom, high); //selection happens in here too
+        
+        if(g==max_gen-1){
+            fit_vector.clear();
+            pop.clear();
+            new_pop.clear();
+            prob_range.clear();
+            prob_vector.clear();
+            if (DeJong_1 ==true && low ==true){
+                f1out_low_min << endl;
+                f1out_low_max << endl;
+                f1out_low_ave << endl;
+            }
+            if (DeJong_1 ==true && high ==true){
+                f1out_high_min << endl;
+                f1out_high_max << endl;
+                f1out_high_ave << endl;
+            }
+            if (DeJong_1 ==true && nom ==true){
+                f1out_nom_min << endl;
+                f1out_nom_max << endl;
+                f1out_nom_ave << endl;
+            }
+            //DEJONG 2//
+            if (DeJong_2 ==true && low ==true){
+                f2out_low_min << endl;
+                f2out_low_max << endl;
+                f2out_low_ave << endl;
+            }
+            if (DeJong_2 ==true && high ==true){
+                f2out_high_min << endl;
+                f2out_high_max << endl;
+                f2out_high_ave << endl;
+            }
+            if (DeJong_2 ==true && nom ==true){
+                f2out_nom_min << endl;
+                f2out_nom_max << endl;
+                f2out_nom_ave << endl;
+            }
+            //DEJONG 3//
+            if (DeJong_3 ==true && low ==true){
+                f3out_low_min << endl;
+                f3out_low_max << endl;
+                f3out_low_ave << endl;
+            }
+            if (DeJong_3 ==true && high ==true){
+                f3out_high_min << endl;
+                f3out_high_max << endl;
+                f3out_high_ave << endl;
+            }
+            if (DeJong_3 ==true && nom ==true){
+                f3out_nom_min << endl;
+                f3out_nom_max << endl;
+                f3out_nom_ave << endl;
+            }
+            //DEJONG 4//
+            if (DeJong_4 ==true && low ==true){
+                f4out_low_min << endl;
+                f4out_low_max << endl;
+                f4out_low_ave << endl;
+            }
+            if (DeJong_4 ==true && high ==true){
+                f4out_high_min << endl;
+                f4out_high_max << endl;
+                f4out_high_ave << endl;
+            }
+            if (DeJong_4 ==true && nom ==true){
+                f4out_nom_min << endl;
+                f4out_nom_max << endl;
+                f4out_nom_ave << endl;
+            }
+        }
     }
+    
 }
 
 #endif /* GA_h */
