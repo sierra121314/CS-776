@@ -26,9 +26,9 @@ protected:
 public:
     int num_pol = 100;                  //number of policies
     int to_kill = num_pol/2;
-    int gen_max = 100;                  //number of generations
+    int gen_max = 1000;                  //number of generations
     double total_time = 500;            //total time
-    int num_city = 14+1;             //number of cities in file
+    int num_city;             //number of cities in file
 
     
     // RANDOMIZING STARTS //

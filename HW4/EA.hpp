@@ -21,8 +21,6 @@
 #include <cassert>
 #include <ctime>
 #include <random>
-#include "LY_NN.h"
-
 using namespace std;
 
 
@@ -56,7 +54,8 @@ public:
     void Run_Program();
     void Graph();
     
-    double holder;
+    int lines;
+    string file;
     
     //int num_weights = 5;
     
@@ -76,15 +75,28 @@ void EA::Build_Population()
     pol.at(0).age = 0;
     pol.at(0).Total_fitness = 0;
     
+    file = "berlin52.tsp";
+    pP->num_city = 52+1;
+    
+    string s1;
+    ifstream data(file);
+    //insert if statement
+    if (file == "burma14.tsp"){
+        lines = 8;
+    }
+    else {
+        lines = 6;
+    }
+    
+    
+    
     for (int c=0; c<pP->num_city; c++) {
         city C;
         pol.at(0).town.push_back(C);
     }
+
     
-    string s1;
-    ifstream data("berlin52.tsp");
-    
-    for (int i=0; i < 6; i++){ //change line from 6 to 8 for BERMA
+    for (int i=0; i < lines; i++){ //change line from 6 to 8 for BERMA
         getline(data,s1);
         //cout << s1 << endl;
     }
@@ -111,7 +123,10 @@ void EA::Build_Population()
     
     for (int i = 0; i < pP->num_pol; i++){
         random_shuffle(pol.at(i).town.begin()+1,pol.at(i).town.end()-1);
+        assert(pol.at(i).town.at(0).origin == 1);
+        assert(pol.at(i).town.at(pP->num_city-1).origin == 1);
     }
+    
     
     assert(pol.size() == pP->num_pol); // check to make sure that the policy sizes are the same
 }
@@ -194,16 +209,21 @@ void EA::Mutation(Policy &M)
     //This is where the policy is slightly mutated
     //MANIPULATE CITY ORDER
     //int rand1 = rand() % (pP->num_city-2);
-    int rand1 =1;
-    for (int x = 0; x < rand1; x++) {
-        int random = 1 + rand() % (pP->num_city-1); //choose 2 random spots
-        int random2 = 1 + rand() %(pP->num_city-1);
-        //cout << "\t" << M.town.at(random).origin << "\t" << M.town.at(random2).origin << endl;
-        swap(M.town.at(random),M.town.at(random2));
-        //cout << "\t" << M.town.at(random).origin << "\t" << M.town.at(random2).origin << endl;
-
-    }
+    double rand2 = (double)rand()/RAND_MAX;
     
+    if (rand2 < 0.5){
+        int rand1 =1;
+        for (int x = 0; x < rand1; x++) {
+            int random = 1 + rand() % (pP->num_city-2); //choose 2 random spots
+            int random2 = 1 + rand() %(pP->num_city-2);
+            //cout << "\t" << M.town.at(random).origin << "\t" << M.town.at(random2).origin << endl;
+            swap(M.town.at(random),M.town.at(random2));
+            //cout << "\t" << M.town.at(random).origin << "\t" << M.town.at(random2).origin << endl;
+            assert(M.town.at(0).origin == 1);
+            assert(M.town.at(pP->num_city-1).origin == 1);
+            
+        }
+    }
 }
 
 
@@ -311,6 +331,12 @@ void EA::Run_Program()
             Evaluate();
             Sort_Policies_By_Fitness();
             cout << "BEST POLICY PRO-FITNESS" << "\t" << pol.at(0).Total_fitness << endl;
+            cout << "BEST PATH" << endl;
+            for (int c=0; c< pP->num_city; c++)
+            {
+                cout << pol.at(0).town.at(c).origin << "\t";
+            }
+            cout << endl;
             best_fitness.push_back(pol.at(0).Total_fitness);      // best fitness per generation
             
         }
