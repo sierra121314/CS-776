@@ -40,6 +40,7 @@ public:
     
     vector<Policy> pol;
     vector<double> best_fitness;
+    vector<double> fit_vector;
     
     void Build_Population();
     void Run_Simulation();
@@ -53,7 +54,9 @@ public:
     void EA_Process();
     void Run_Program();
     void Graph();
+    void init_fit_vec();
     
+    double sum;
     int lines;
     string file;
     
@@ -71,12 +74,13 @@ private:
 void EA::Build_Population()
 {
     Policy pro; //instance of a tour
+    pol.clear();
     pol.push_back(pro);
     pol.at(0).age = 0;
     pol.at(0).Total_fitness = 0;
     
-    file = "berlin52.tsp";
-    pP->num_city = 52+1;
+    file = "burma14.tsp";
+    pP->num_city = 14+1;
     
     string s1;
     ifstream data(file);
@@ -211,7 +215,7 @@ void EA::Mutation(Policy &M)
     //int rand1 = rand() % (pP->num_city-2);
     double rand2 = (double)rand()/RAND_MAX;
     
-    if (rand2 < 0.5){
+    if (rand2 < 0.6){
         int rand1 =1;
         for (int x = 0; x < rand1; x++) {
             int random = 1 + rand() % (pP->num_city-2); //choose 2 random spots
@@ -248,9 +252,11 @@ void EA::Repopulate()
 //-------------------------------------------------------------------------
 //Runs the entire EA loop process
 void EA::EA_Process() {
+
     Evaluate();
+    
     Sort_Policies_By_Fitness();
-    //cout << "BEST POLICY PRO-FITNESS" << "\t" << pol.at(0).Total_fitness << endl;
+    
     best_fitness.push_back(pol.at(0).Total_fitness);
     Downselect();
     Repopulate();
@@ -306,46 +312,108 @@ void EA::Graph(){
 
     
 }
+void EA::init_fit_vec(){
+    for(int i =0; i<pP->num_pol; i++){
+        fit_vector.push_back(0);
+        
+    }
+}
 
 
 //-------------------------------------------------------------------------
 //Runs the entire program
 void EA::Run_Program()
 {
-    
+    sum=0;
     
     ofstream rand_start;
     rand_start.open("random_starting_variables.txt", ofstream::out | ofstream::trunc);
     
-    Build_Population(); //Builds all tours of cities with coordinates
-    for (int gen=0; gen<pP->gen_max; gen++) {
+    ofstream fout;
+    fout.open("Best_fitness_history.txt",std::ofstream::out | ofstream::trunc);
+    
+    ofstream f1out_min;
+    ofstream f1out_max;
+    ofstream f1out_ave;
+    f1out_min.open("H4-min.txt", ofstream::out | ofstream::trunc);
+    f1out_max.open("H4-max.txt", ofstream::out | ofstream::trunc);
+    f1out_ave.open("H4-ave.txt", ofstream::out | ofstream::trunc);
+    
+    
+    for (int stat=0; stat<30; stat++){
         
-        if (gen %10 ==0) {
-            cout << "GENERATION \t" << gen << endl;
-        }
-        if (gen < pP->gen_max-1) {
-            EA_Process();
-        }
-        else {
+        init_fit_vec();
+        Build_Population(); //Builds all tours of cities with coordinates
+        
+        for (int gen=0; gen<pP->gen_max; gen++) {
             
-            Evaluate();
-            Sort_Policies_By_Fitness();
-            cout << "BEST POLICY PRO-FITNESS" << "\t" << pol.at(0).Total_fitness << endl;
-            cout << "BEST PATH" << endl;
-            for (int c=0; c< pP->num_city; c++)
-            {
-                cout << pol.at(0).town.at(c).origin << "\t";
+            if (gen %100 ==0) {
+                //cout << "GENERATION \t" << gen << endl;
             }
-            cout << endl;
-            best_fitness.push_back(pol.at(0).Total_fitness);      // best fitness per generation
+            if (gen < pP->gen_max-1) {
+                EA_Process();
+            }
+            else {
+                
+                Evaluate();
+                
+                //cout <<endl;
+                Sort_Policies_By_Fitness();
+                cout << "BEST POLICY PRO-FITNESS" << "\t" << pol.at(0).Total_fitness << endl;
+                //cout << "BEST PATH" << endl;
+                for (int c=0; c< pP->num_city; c++) {
+                    ///cout << pol.at(0).town.at(c).origin << "\t";
+                }
+                //cout << endl;
+                best_fitness.push_back(pol.at(0).Total_fitness);      // best fitness per generation
+                
+            }
+            for (int p=0; p< pP->num_pol;p++){
+                //cout <<fit_vector.at(p) << "\t";
+                fit_vector.at(p) = abs(pol.at(p).Total_fitness);
+                sum+=abs(pol.at(p).Total_fitness);
+                //cout << abs(pol.at(p).Total_fitness) << "\t";
+                //cout <<fit_vector.at(p) << "\t";
+                assert(fit_vector.size()==pP->num_pol);
+            }
+            //maybe?
+            double min = *min_element(fit_vector.begin(), fit_vector.end());
+            //cout << min << "\t";
+            double max = *max_element(fit_vector.begin(), fit_vector.end());
+            //cout << max << endl;
+            double ave = sum/pP->num_pol;
+            f1out_min << min << "\t";
+            //cout << min << "\t" << max << endl;
+            f1out_max << max << "\t";
+            f1out_ave << ave << "\t";
+            sum=0;
+            if(gen==pP->gen_max-1){
+                fit_vector.clear();
+                //clear any other vectors
+                f1out_min << endl;
+                f1out_max << endl;
+                f1out_ave << endl;
+                sum =0;
+            }
             
         }
         
         
+        
+        
+        for (int h =0; h < best_fitness.size(); h++){
+            fout << best_fitness.at(h) << "\t";
+        }
     }
+    
+    
     
     //Graph();
     rand_start.close();
+    fout.close();
+    f1out_min.close();
+    f1out_max.close();
+    f1out_ave.close();
 }
 
 
