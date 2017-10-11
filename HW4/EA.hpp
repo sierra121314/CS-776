@@ -79,8 +79,8 @@ void EA::Build_Population()
     pol.at(0).age = 0;
     pol.at(0).Total_fitness = 0;
     
-    file = "burma14.tsp";
-    pP->num_city = 14+1;
+    file = "berlin52.tsp";
+    pP->num_city = 52+1;
     
     string s1;
     ifstream data(file);
@@ -111,13 +111,15 @@ void EA::Build_Population()
         data >> pol.at(0).town.at(w).origin;
         data >> pol.at(0).town.at(w).x;
         data >> pol.at(0).town.at(w).y;
+        assert(pol.at(0).town.at(0).origin == 1);
+        
         
     }
     //LAST CITY EQUALS FIRST CITY
     pol.at(0).town.at(pP->num_city-1).origin = pol.at(0).town.at(0).origin;
     pol.at(0).town.at(pP->num_city-1).x = pol.at(0).town.at(0).x;
     pol.at(0).town.at(pP->num_city-1).y = pol.at(0).town.at(0).y;
-    
+    assert(pol.at(0).town.at(pP->num_city-1).origin == 1);
     
     // SET UP THE REST OF THE POLICIES
     for (int i=1; i<pP->num_pol; i++) {
@@ -126,6 +128,8 @@ void EA::Build_Population()
     }
     
     for (int i = 0; i < pP->num_pol; i++){
+        assert(pol.at(i).town.at(0).origin == 1);
+        assert(pol.at(i).town.at(pP->num_city-1).origin == 1);
         random_shuffle(pol.at(i).town.begin()+1,pol.at(i).town.end()-1);
         assert(pol.at(i).town.at(0).origin == 1);
         assert(pol.at(i).town.at(pP->num_city-1).origin == 1);
@@ -159,24 +163,21 @@ void EA::Evaluate()
 
 //////////////////////////////////////////////////////////////////////////////
 //Randomly selects two tours and decides which one will die based on their fitness
-int EA::Binary_Select() //BINARY TOURNAMENT
+int EA::Binary_Select() //BINARY TOURNAMENT [Blickle and Thiele]
 {
     int loser;
     int index_1 = rand() % pol.size();
     int index_2 = rand() % pol.size();
-    while (index_1 == index_2)
-    {
+    while (index_1 == index_2) {
         index_2 = rand() % pol.size();
     }
     
     //winner is one with lower fitness
-    if(pol.at(index_1).Total_fitness < pol.at(index_2).Total_fitness)
-    {
+    if(pol.at(index_1).Total_fitness < pol.at(index_2).Total_fitness) {
         loser = index_2;
         //cout << "loser" << "\t" <<  "agent" << "\t" << index_2 << endl;
     }
-    else
-    {
+    else {
         loser = index_1;
         //cout << "loser" << "\t" <<  "agent" << "\t" << index_1 << endl;
     }
